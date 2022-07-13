@@ -266,6 +266,9 @@ struct AttributesDefault
     float3 vertex : POSITION;
 };
 
+float2 _SplitOrigin;
+float2 _SplitNormal;
+
 struct VaryingsDefault
 {
     float4 vertex : SV_POSITION;
@@ -274,6 +277,7 @@ struct VaryingsDefault
 #if STEREO_INSTANCING_ENABLED
     uint stereoTargetEyeIndex : SV_RenderTargetArrayIndex;
 #endif
+    float clip : TEXCOORD2;
 };
 
 #if STEREO_INSTANCING_ENABLED
@@ -291,6 +295,8 @@ VaryingsDefault VertDefault(AttributesDefault v)
 #endif
 
     o.texcoordStereo = TransformStereoScreenSpaceTex(o.texcoord, 1.0);
+    
+    o.clip = dot(o.vertex.xy - _SplitOrigin, _SplitNormal);
 
     return o;
 }
@@ -315,6 +321,9 @@ VaryingsDefault VertUVTransform(AttributesDefault v)
 #if STEREO_INSTANCING_ENABLED
     o.stereoTargetEyeIndex = (uint)_DepthSlice;
 #endif
+
+    o.clip = dot(o.vertex.xy - _SplitOrigin, _SplitNormal);
+
     return o;
 }
 

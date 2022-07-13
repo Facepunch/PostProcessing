@@ -78,6 +78,11 @@ Shader "Hidden/PostProcessing/Uber"
         {
             float2 uv = i.texcoord;
 
+            if (i.clip < 0.0)
+            {
+                return SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, uv);
+            }
+
             //>>> Automatically skipped by the shader optimizer when not used
             float2 uvDistorted = Distort(i.texcoord);
             float2 uvStereoDistorted = Distort(i.texcoordStereo);
